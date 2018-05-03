@@ -1,7 +1,8 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const books = [];
-const pages = ['index.html', 'page-2.html', 'page-3.html']
+const pages = ['index.html', 'page-2.html', 'page-3.html'];
+const Book = require('./../models/book.js');
 
 pages.forEach(function(elem) {
     scrapeBookSite(elem);
@@ -26,14 +27,15 @@ function scrapeBookSite(path) {
 
             let book = {
                 title: $(elem).find('h3 > a').text(), 
-                price: parseFloat($(elem).find('.price_color').text().slice(1)), 
+                price: parseFloat((parseFloat($(elem).find('.price_color').text().slice(1)) * 1.36).toFixed(2)), 
                 rating: newRating
             }
 
             books.push(book);
 
             if (books.length === 48) {
-                console.log(books);
+                Book.create({ title: "Yo", price: 1, rating: 5})
+                    .then(book => console.log(book))
             }
             
         })
